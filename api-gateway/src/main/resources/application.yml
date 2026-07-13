@@ -1,0 +1,49 @@
+#server:
+#  port: 8080
+#spring:
+#  application:
+#    name: api-gateway
+#  cloud:
+#    gateway:
+#      discovery:
+#        locator:
+#          enabled: true
+#          lower-case-service-id: true
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
+#app:
+#  jwt:
+#    secret: "vS6K5vH8N2zB4xR9mQ3pL1wT7yC5vH8N2zB4xR9mQ3pL1wT7yC5vH8N2z"
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # 1. Định tuyến cho Course Service (Bài tập 2)
+        - id: course-service
+          uri: lb://course-service
+          predicates:
+            - Path=/api/courses/**
+
+        # 2. Định tuyến cho Identity Service (Để còn login lấy token chứ)
+        - id: identity-service
+          uri: lb://identity-service
+          predicates:
+            - Path=/api/auth/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+app:
+  jwt:
+    # CHÚ Ý: Bắt buộc copy y xì đúc Secret Key bên Identity-Service sang đây
+    secret: "vS6K5vH8N2zB4xR9mQ3pL1wT7yC5vH8N2zB4xR9mQ3pL1wT7yC5vH8N2z"
